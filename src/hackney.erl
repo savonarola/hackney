@@ -237,10 +237,10 @@ request(Method, URL, Headers, Body) ->
 %%          redirection for a request</li>
 %%          <li>`{force_redirect, boolean}': false by default, to force the
 %%          redirection even on POST</li>
-%%          <li>`{basic_auth, {binary, binary}}`: HTTP basic auth username and password. 
+%%          <li>`{basic_auth, {binary, binary}}`: HTTP basic auth username and password.
 %%          Only allowed over HTTPS unless {insecure_basic_auth, true} is also set.</li>
-%%          <li>`{insecure_basic_auth, boolean}': false by default. When true, allows 
-%%          basic auth over unencrypted HTTP connections (security risk). 
+%%          <li>`{insecure_basic_auth, boolean}': false by default. When true, allows
+%%          basic auth over unencrypted HTTP connections (security risk).
 %%          Can also be set globally via application:set_env(hackney, insecure_basic_auth, true).</li>
 %%          <li>`{proxy, proxy_options()}': to connect via a proxy.</li>
 %%          <li>`insecure': to perform "insecure" SSL connections and
@@ -377,6 +377,7 @@ send_request(#client{response_state=done}=Client0 ,
   send_request(Client, {Method, Path, Headers, Body});
 
 send_request(Client0, {Method, Path, Headers, Body}=Req) ->
+  ct:print("send_request, ~p ~p", [Method, Path]),
   case hackney_connect:maybe_connect(Client0) of
     {ok, Client} ->
       case {Client#client.response_state, Client#client.body_state} of
