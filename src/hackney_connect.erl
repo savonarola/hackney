@@ -264,6 +264,7 @@ do_connect(Host, Port, Transport, #client{mod_metrics=Metrics,
   ConnectTimeout = connect_timeout(Client),
   ConnectOpts = hackney_connection:connect_options(Transport, Host, ClientOptions),
 
+  ct:print("do_connect, call Transport:connect, ~p:~p, timeout ~p", [Host, Port, ConnectTimeout]),
   case Transport:connect(Host, Port, ConnectOpts, ConnectTimeout) of
     {ok, Skt} ->
       ?report_trace("new connection", []),
