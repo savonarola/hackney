@@ -131,12 +131,9 @@ connect(Host, Port, Opts0, Timeout) when is_list(Host), is_integer(Port),
   SSLOpts = proplists:get_value(ssl_options, Opts0),
   BaseOpts = [binary, {active, false}, {packet, raw}],
   Opts1 = hackney_util:merge_opts(BaseOpts, proplists:delete(ssl_options, Opts0)),
-  HHRes = hackney_happy:connect(Host, Port, Opts1, Timeout),
-  ct:print("hackney_ssl:connect, ~p:~p, HHRes: ~p", [Host, Port, HHRes]),
-  case HHRes of
+  case hackney_happy:connect(Host, Port, Opts1, Timeout) of
     {ok, Sock} ->
-      ct:print("hackney_ssl:connect, ~p:~p, Sock: ~p", [Host, Port, Sock]),
-      ssl:connect(Sock, SSLOpts);
+      ssl:connect(Sock, SSLOpts, Timeout);
     Error ->
       Error
   end.
