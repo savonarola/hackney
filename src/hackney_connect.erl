@@ -213,7 +213,9 @@ socket_from_pool(Host, Port, Transport, Client0) ->
   %% new request
   {_RequestRef, Client} = hackney_manager:new_request(Client0),
 
-  case PoolHandler:checkout(Host, Port, Transport, Client) of
+  Res = PoolHandler:checkout(Host, Port, Transport, Client),
+  ct:print("socket_from_pool ~p:~p, Res: ~p", [Host, Port, Res]),
+  case Res of
     {ok, Ref, Skt} ->
       ?report_debug("reuse a connection", [{pool, PoolName}]),
       _ = metrics:update_meter(Metrics, [hackney_pool, PoolName, take_rate], 1),
