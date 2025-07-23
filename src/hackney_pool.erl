@@ -78,7 +78,9 @@ do_checkout(Requester, Host, _Port, Transport, #client{options=Opts,
   PoolName = proplists:get_value(pool, Opts, default),
   Pool = find_pool(PoolName, Opts),
   ct:print("do_checkout, call gen_server:call ~p:~p transport ~p timeout ~p", [Host, _Port, Transport, CheckoutTimeout]),
-  case catch gen_server:call(Pool, {checkout, Connection, Requester, RequestRef}, CheckoutTimeout) of
+  Res = catch gen_server:call(Pool, {checkout, Connection, Requester, RequestRef}, CheckoutTimeout),
+  ct:print("do_checkout, call gen_server:call ~p:~p Res: ~p", [Host, _Port, Res]),
+  case Res of
     {ok, Socket, Owner} ->
       %% stats
       ?report_debug("reuse a connection", [{pool, PoolName}]),
@@ -88,6 +90,7 @@ do_checkout(Requester, Host, _Port, Transport, #client{options=Opts,
     {error, no_socket, Owner} ->
       ?report_trace("no socket in the pool", [{pool, PoolName}]),
       Begin = os:timestamp(),
+      ct:print("do_checkout, call hackney_connection:connect ~p:~p transport ~p ConnectTimeout ~p", [Host, _Port, Transport, ConnectTimeout]),
       case hackney_connection:connect(Connection, ConnectOptions, ConnectTimeout) of
         {ok, Socket} ->
           case hackney_connection:controlling_process(Connection, Socket, Requester) of
