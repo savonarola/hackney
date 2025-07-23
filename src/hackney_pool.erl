@@ -77,6 +77,7 @@ do_checkout(Requester, Host, _Port, Transport, #client{options=Opts,
   RequestRef = Client#client.request_ref,
   PoolName = proplists:get_value(pool, Opts, default),
   Pool = find_pool(PoolName, Opts),
+  ct:print("do_checkout, call gen_server:call ~p:~p transport ~p timeout ~p", [Host, _Port, Transport, CheckoutTimeout]),
   case catch gen_server:call(Pool, {checkout, Connection, Requester, RequestRef}, CheckoutTimeout) of
     {ok, Socket, Owner} ->
       %% stats
@@ -477,11 +478,11 @@ cancel_timer(Socket, Timer) ->
       receive
         {timeout, Socket} -> ok
       after
-        100 -> 
+        100 ->
           %% Safety timeout - if message doesn't arrive, continue anyway
           ok
       end;
-    _ -> 
+    _ ->
       %% Timer was successfully cancelled, no message should exist
       %% Don't drain messages to avoid consuming legitimate timeout messages
       ok
