@@ -127,6 +127,7 @@ connect(Host, Port, Opts) ->
 
 connect(Host, Port, Opts0, Timeout) when is_list(Host), is_integer(Port),
                                         (Timeout =:= infinity orelse is_integer(Timeout)) ->
+  ct:print("hackney_ssl:connect, ~p:~p~nOpts: ~p~nTimeout: ~p", [Host, Port, proplists:delete(ssl_options, Opts0), Timeout]),
   SSLOpts = proplists:get_value(ssl_options, Opts0),
   BaseOpts = [binary, {active, false}, {packet, raw}],
   Opts1 = hackney_util:merge_opts(BaseOpts, proplists:delete(ssl_options, Opts0)),
