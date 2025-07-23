@@ -29,6 +29,7 @@ connect(Transport, Host, Port, Options) ->
 connect(Transport, Host, Port, Options, Dynamic) when is_binary(Host) ->
   connect(Transport, binary_to_list(Host), Port, Options, Dynamic);
 connect(Transport, Host, Port, Options, Dynamic) ->
+  ct:print("connect, ~p:~p~nOptions: ~p", [Host, Port, proplists:delete(ssl_options, Options)]),
   ?report_debug("connect", [{transport, Transport},
                             {host, Host},
                             {port, Port},
