@@ -97,6 +97,7 @@ create_connection(Transport, Host, Port, Options, Dynamic)
   %% if we use a pool then checkout the connection from the pool, else
   %% connect the socket to the remote
   %%
+  ct:print("create_connection, call reconnect, ~p:~p", [Host, Port]),
   reconnect(Host, Port, Transport, InitialState).
 
 
